@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using AtomicEngine2.Utils;
+using AtomicEngine2.Engine.GameLevel;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Entities
 {
     /// <summary>
     /// Represents a level colllider totem for a bipedal entity

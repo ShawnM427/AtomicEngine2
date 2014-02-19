@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using AtomicEngine2.Utils;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Render
 {
     class AdvancedSpriteBatch
     {

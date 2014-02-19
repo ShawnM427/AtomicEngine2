@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using AtomicEngine2.Utils;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.GameLevel
 {
     public class LevelCollider
     {

@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using AtomicEngine2.Utils;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.GameLevel
 {
     /// <summary>
     /// Represents a static object in a level

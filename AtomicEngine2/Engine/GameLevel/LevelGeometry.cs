@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.GameLevel
 {
     public class LevelGeometry
     {

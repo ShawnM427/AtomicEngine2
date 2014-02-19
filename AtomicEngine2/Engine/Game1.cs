@@ -8,7 +8,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using AtomicEngine2.Utils;
-using AtomicEngine2.Engine.LevelObjects;
+using AtomicEngine2.Engine.GameLevel;
+using AtomicEngine2.Engine.Input;
+using AtomicEngine2.Engine.Render;
+using AtomicEngine2.Engine.Entities;
 #endregion
 
 namespace AtomicEngine2.Engine
@@ -131,6 +134,8 @@ namespace AtomicEngine2.Engine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            KeyboardManager.Begin();
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -145,16 +150,18 @@ namespace AtomicEngine2.Engine
 
             KeyboardState curState = Keyboard.GetState();
 
-            if (curState.IsKeyDown(Keys.Up) & !prevState.IsKeyDown(Keys.Up))
+            if (KeyboardManager.IsPressed(Keys.Up))
                 sprite.YFrame++;
 
-            if (curState.IsKeyDown(Keys.Down) & !prevState.IsKeyDown(Keys.Down))
+            if (KeyboardManager.IsPressed(Keys.Down))
                 sprite.YFrame--;
 
             prevState = curState;
 
 
             base.Update(gameTime);
+
+            KeyboardManager.End();
         }
 
         /// <summary>

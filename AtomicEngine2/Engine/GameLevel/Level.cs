@@ -5,9 +5,9 @@ using System.Text;
 using AtomicEngine2.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using AtomicEngine2.Engine.LevelObjects;
+using AtomicEngine2.Engine.Entities;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.GameLevel
 {
     public class Level
     {

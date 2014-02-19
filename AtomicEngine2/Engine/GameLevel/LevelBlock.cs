@@ -6,7 +6,7 @@ using AtomicEngine2.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicEngine2.Engine.LevelObjects
+namespace AtomicEngine2.Engine.GameLevel
 {
     public class LevelBlock : LevelObject
     {

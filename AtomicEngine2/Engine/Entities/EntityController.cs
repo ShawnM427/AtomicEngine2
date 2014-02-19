@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Entities
 {
     public abstract class EntityController
     {

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
 using AtomicEngine2.Utils;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Entities
 {
     public class Player : BipedalEntity
     {

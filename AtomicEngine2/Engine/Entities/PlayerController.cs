@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Entities
 {
     public class PlayerController : EntityController
     {
@@ -17,7 +17,6 @@ namespace AtomicEngine2.Engine
         Keys _jump;
         Keys _crouch;
 
-        GamePadThumbSticks _gp_moveStick;
         GamePadButtons _gp_jump;
         GamePadButtons _gp_crouch;
 
@@ -25,13 +24,13 @@ namespace AtomicEngine2.Engine
 
         public PlayerController()
         {
-            //_prevGamepadState = GamePad.
+            _prevGamepadState = GamePad.GetState(PlayerIndex.One);
             _prevKeyState = Keyboard.GetState();
         }
 
         public override EntityState Apply(EntityState entityState)
         {
-            //GamePadState currentGPState = GamePad.GetState(PlayerIndex.One);
+            GamePadState currentGPState = GamePad.GetState(PlayerIndex.One);
             KeyboardState currentKeyState = Keyboard.GetState();
 
             if (currentKeyState.IsKeyDown(_moveRight))
@@ -40,10 +39,10 @@ namespace AtomicEngine2.Engine
             if (currentKeyState.IsKeyDown(_moveLeft))
                 entityState.ReqX -= _xAcc;
 
-            //entityState.ReqX += currentGPState.ThumbSticks.Left.X * _xAcc;
+            entityState.ReqX += currentGPState.ThumbSticks.Left.X * _xAcc;
 
             _prevKeyState = currentKeyState;
-            //_prevGamepadState = currentGPState;
+            _prevGamepadState = currentGPState;
 
             return entityState;
         }

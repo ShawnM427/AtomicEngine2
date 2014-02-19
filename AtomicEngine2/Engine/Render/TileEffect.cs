@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using AtomicEngine2.Properties;
 
-namespace AtomicEngine2.Engine
+namespace AtomicEngine2.Engine.Render
 {
     public class TileEffect : Effect
     {
