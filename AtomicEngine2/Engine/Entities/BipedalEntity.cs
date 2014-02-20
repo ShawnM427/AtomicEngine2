@@ -82,7 +82,7 @@ namespace AtomicEngine2.Engine.Entities
         }
 
         public virtual void Update(GameTime gameTime, LevelCollider collider)
-        {
+        {            
             _reqX = 0;
             _reqY = 0;
             

@@ -10,77 +10,81 @@ namespace AtomicEngine2.Engine.Render
 {
     class AdvancedSpriteBatch
     {
-        VertexPositionColorTexture[] vertices;
-        short[] indices;
-        int vertexCount = 0;
-        int indexCount = 0;
-        Texture2D texture;
-        GraphicsDevice device;
+        VertexPositionColorTexture[] _vertices;
+        short[] _indices;
+        int _vertexCount = 0;
+        int _indexCount = 0;
+        Texture2D _texture;
+        GraphicsDevice _device;
 
-        //  these should really be properties
-        public BasicEffect Effect;
+        BasicEffect _effect;
 
         public AdvancedSpriteBatch(GraphicsDevice device)
         {
-            this.device = device;
-            this.vertices = new VertexPositionColorTexture[256];
-            this.indices = new short[vertices.Length * 3 / 2];
-            this.Effect = new BasicEffect(device);
+            _device = device;
+            _vertices = new VertexPositionColorTexture[256];
+            _indices = new short[_vertices.Length * 3 / 2];
+
+            _effect = new BasicEffect(device);
+            _effect.TextureEnabled = true;
+            _effect.VertexColorEnabled = true;
 
             ResetMatrices(800, 480);
         }
 
         public void ResetMatrices(int width, int height)
         {
-            Effect.World = Matrix.CreateTranslation(0,0,-1);
-            Effect.View = Matrix.CreateOrthographic(width, height, 0.1F, 100);
-            Effect.Projection = Matrix.Identity;
+            _effect.World = Matrix.CreateTranslation(0,0,-1);
+            _effect.View = Matrix.CreateOrthographicOffCenter(
+                0, width, height, 9, 0.001F, 1000F);
+
+            _effect.Projection = Matrix.Identity;
         }
 
-        public void Draw(Texture2D texture, RectangleF srcRectangle, RectangleF dstRectangle, Color color)
+        public void Draw(Texture2D texture, RectangleF dstRectangle, RectangleF srcRectangle, Color color)
         {
             //  if the texture changes, we flush all queued sprites.
-            if (this.texture != null && this.texture != texture)
+            if (this._texture != null && this._texture != texture)
                 this.Flush();
-            this.texture = texture;
+            this._texture = texture;
 
             //  ensure space for my vertices and indices.
             this.EnsureSpace(6, 4);
 
             //  add the new indices
-            indices[indexCount++] = (short)(vertexCount + 0);
-            indices[indexCount++] = (short)(vertexCount + 1);
-            indices[indexCount++] = (short)(vertexCount + 3);
-            indices[indexCount++] = (short)(vertexCount + 1);
-            indices[indexCount++] = (short)(vertexCount + 2);
-            indices[indexCount++] = (short)(vertexCount + 3);
+            _indices[_indexCount++] = (short)(_vertexCount + 0);
+            _indices[_indexCount++] = (short)(_vertexCount + 1);
+            _indices[_indexCount++] = (short)(_vertexCount + 3);
+            _indices[_indexCount++] = (short)(_vertexCount + 1);
+            _indices[_indexCount++] = (short)(_vertexCount + 2);
+            _indices[_indexCount++] = (short)(_vertexCount + 3);
 
             // add the new vertices
-            vertices[vertexCount++] = new VertexPositionColorTexture(
+            _vertices[_vertexCount++] = new VertexPositionColorTexture(
                 new Vector3(dstRectangle.Left, dstRectangle.Top, 0)
                 , color, GetUV(srcRectangle.Left, srcRectangle.Top));
-            vertices[vertexCount++] = new VertexPositionColorTexture(
+            _vertices[_vertexCount++] = new VertexPositionColorTexture(
                 new Vector3(dstRectangle.Right, dstRectangle.Top, 0)
                 , color, GetUV(srcRectangle.Right, srcRectangle.Top));
-            vertices[vertexCount++] = new VertexPositionColorTexture(
+            _vertices[_vertexCount++] = new VertexPositionColorTexture(
                 new Vector3(dstRectangle.Right, dstRectangle.Bottom, 0)
                 , color, GetUV(srcRectangle.Right, srcRectangle.Bottom));
-            vertices[vertexCount++] = new VertexPositionColorTexture(
+            _vertices[_vertexCount++] = new VertexPositionColorTexture(
                 new Vector3(dstRectangle.Left, dstRectangle.Bottom, 0)
                 , color, GetUV(srcRectangle.Left, srcRectangle.Bottom));
         }
 
         Vector2 GetUV(float x, float y)
         {
-            return new Vector2(x / (float)texture.Width, y / (float)texture.Height);
+            return new Vector2(x / (float)_texture.Width, y / (float)_texture.Height);
         }
 
         void EnsureSpace(int indexSpace, int vertexSpace)
         {
-            if (indexCount + indexSpace >= indices.Length)
-                Array.Resize(ref indices, Math.Max(indexCount + indexSpace, indices.Length * 2));
-            if (vertexCount + vertexSpace >= vertices.Length)
-                Array.Resize(ref vertices, Math.Max(vertexCount + vertexSpace, vertices.Length * 2));
+            if (_indexCount + indexSpace >= _indices.Length)
+                Array.Resize(ref _indices, Math.Max(_indexCount + indexSpace, _indices.Length * 2));
+            if (_vertexCount + vertexSpace >= _vertices.Length)
+                Array.Resize(ref _vertices, Math.Max(_vertexCount + vertexSpace, _vertices.Length * 2));
         }
 
         public void Begin()
@@ -90,19 +94,21 @@ namespace AtomicEngine2.Engine.Render
 
         public void Flush()
         {
-            if (this.vertexCount > 0)
+            if (this._vertexCount > 0)
             {
-                foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+                _effect.Texture = _texture;
+
+                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
 
-                    device.DrawUserIndexedPrimitives<VertexPositionColorTexture>(
-                        PrimitiveType.TriangleList, this.vertices, 0, this.vertexCount,
-                        this.indices, 0, this.indexCount / 3);
+                    _device.DrawUserIndexedPrimitives<VertexPositionColorTexture>(
+                        PrimitiveType.TriangleList, this._vertices, 0, this._vertexCount,
+                        this._indices, 0, this._indexCount / 3);
                 }
 
-                this.vertexCount = 0;
-                this.indexCount = 0;
+                this._vertexCount = 0;
+                this._indexCount = 0;
             }
         }
 

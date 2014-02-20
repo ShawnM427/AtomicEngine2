@@ -63,6 +63,16 @@ namespace AtomicEngine2.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] SpriteEffect {
+            get {
+                object obj = ResourceManager.GetObject("SpriteEffect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] TileShader {
             get {
                 object obj = ResourceManager.GetObject("TileShader", resourceCulture);

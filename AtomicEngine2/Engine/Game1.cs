@@ -83,6 +83,8 @@ namespace AtomicEngine2.Engine
                tex, 16, 8, 
                 TimeSpan.FromSeconds(1.0 / 32.0));
 
+            TileEffect t = new TileEffect(GraphicsDevice);
+
             destination = new Rectangle(10, 10, 32, 48);
 
             BuildLevel();            
@@ -186,7 +188,8 @@ namespace AtomicEngine2.Engine
             sprite.Draw(destination, gameTime);
             spriteBatch.End();
 
-            _aBatch.Draw(tex, new RectangleF(0, 0, 12.5F, 69.69F), new RectangleF(100, 100, 100, 100), Color.White);
+            _aBatch.Begin();
+            _aBatch.Draw(tex, new RectangleF(0, 0, 100, 100), new RectangleF(0, 0, 512, 255), Color.White);
             _aBatch.End();
 
             base.Draw(gameTime);
