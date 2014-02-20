@@ -51,12 +51,18 @@ namespace AtomicEngine2.Engine.Entities
         /// </summary>
         public float ReqY;
 
-        public EntityState(bool onGround, Vector2 pos, float reqX, float reqY)
+        /// <summary>
+        /// Gets or sets the y acceleration
+        /// </summary>
+        public float YAcc;
+
+        public EntityState(bool onGround, Vector2 pos, float reqX, float reqY, float yAcc)
         {
             this.IsOnGround = onGround;
             this.Pos = pos;
             this.ReqX = reqX;
             this.ReqY = reqY;
+            this.YAcc = yAcc;
         }
     }
 }

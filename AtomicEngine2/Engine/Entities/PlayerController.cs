@@ -14,7 +14,7 @@ namespace AtomicEngine2.Engine.Entities
 
         Keys _moveLeft = Keys.A;
         Keys _moveRight = Keys.D;
-        Keys _jump;
+        Keys _jump = Keys.Space;
         Keys _crouch;
 
         GamePadButtons _gp_jump;
@@ -38,6 +38,12 @@ namespace AtomicEngine2.Engine.Entities
 
             if (currentKeyState.IsKeyDown(_moveLeft))
                 entityState.ReqX -= _xAcc;
+
+            if (currentKeyState.IsKeyDown(_jump) & _prevKeyState.IsKeyUp(_jump) & entityState.IsOnGround)
+            {
+                entityState.YAcc -= 0.5F;
+                entityState.ReqY -= 5;
+            }
 
             entityState.ReqX += currentGPState.ThumbSticks.Left.X * _xAcc;
 

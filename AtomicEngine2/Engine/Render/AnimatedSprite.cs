@@ -10,14 +10,14 @@ namespace AtomicEngine2.Engine.Render
 {
     public class AnimatedSprite
     {
-        SpriteBatch _batch;
+        AdvancedSpriteBatch _batch;
         int _xFrame;
         int _yFrame;
         Texture2D _texture;
-        Rectangle _source;
+        RectangleF _source;
 
-        int _frameWidth;
-        int _frameHeight;
+        float _frameWidth;
+        float _frameHeight;
         int _xFrameCount;
         int _yFrameCount;
 
@@ -42,9 +42,9 @@ namespace AtomicEngine2.Engine.Render
         /// <param name="xFrame">The number of frames along the x axis</param>
         /// <param name="yFrame">The number of frames along the y axis</param>
         /// <param name="targetFrameTime">The target amount of time per frame</param>
-        public AnimatedSprite(SpriteBatch batch, Texture2D texture, int xFrame, int yFrame, TimeSpan targetFrameTime)
+        public AnimatedSprite(GraphicsDevice graphics, Texture2D texture, int xFrame, int yFrame, TimeSpan targetFrameTime)
         {
-            _batch = batch;
+            _batch = new AdvancedSpriteBatch(graphics); ;
             _texture = texture;
             _xFrameCount = xFrame;
             _yFrameCount = yFrame;
@@ -52,7 +52,7 @@ namespace AtomicEngine2.Engine.Render
             _frameWidth = texture.Width / xFrame;
             _frameHeight = texture.Height / yFrame;
 
-            _source = new Rectangle(0, 0, _frameWidth, _frameHeight);
+            _source = new RectangleF(0, 0, _frameWidth, _frameHeight);
             _timePerFrame = targetFrameTime.TotalMilliseconds;
         }
 
@@ -70,7 +70,7 @@ namespace AtomicEngine2.Engine.Render
         /// </summary>
         /// <param name="destination">The destination rectangle</param>
         /// <param name="gameTime">The current game time</param>
-        public void Draw(Rectangle destination, GameTime gameTime)
+        public void Draw(RectangleF destination, GameTime gameTime)
         {
             _elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -82,6 +82,7 @@ namespace AtomicEngine2.Engine.Render
             }
 
             _batch.Draw(_texture, destination, _source, _modifier);
+            _batch.End();
         }
     }
 }

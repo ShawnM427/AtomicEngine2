@@ -11,6 +11,8 @@ namespace AtomicEngine2.Engine.Entities
 {
     public abstract class BipedalEntity
     {
+        public const float PREFERED_UPS = 1000.0F / 60.0F;
+
         protected Vector2 _pos;
         protected Vector2 _prevPos;
 
@@ -63,6 +65,8 @@ namespace AtomicEngine2.Engine.Entities
         {
             get { return _bounds; }
         }
+
+        float mlp;
         
         public BipedalEntity(GraphicsDevice graphics, Vector2 pos, float maxXSpeed, float maxYSpeed, float height, float width)
         {
@@ -82,33 +86,40 @@ namespace AtomicEngine2.Engine.Entities
         }
 
         public virtual void Update(GameTime gameTime, LevelCollider collider)
-        {            
+        {
+            _prevPos = _pos;
+
             _reqX = 0;
             _reqY = 0;
-            
+
+            mlp = (float)gameTime.ElapsedGameTime.TotalMilliseconds / PREFERED_UPS;
+                        
             ApplyPhysics();
 
             UpdateState();
 
             EntityState e = controller.Apply(_state);
 
+            _yAcc = e.YAcc;
+
             _reqX += e.ReqX;
             _reqY += e.ReqY;
-                                                            
+
+            _reqX *= mlp;
+            _reqY *= mlp;
+                   
             CheckCollisions(collider);
 
             _pos.X += _reqX;
             _pos.Y += _reqY;
 
             _bounds.X = _pos.X - _width / 2;
-            _bounds.Y = _pos.Y - _height;
-
-            _prevPos = _pos;
+            _bounds.Y = _pos.Y - _height + 8;
         }
 
         private void UpdateState()
         {
-            _state = new EntityState(_isOnGround, _pos, _reqX, _reqY);
+            _state = new EntityState(_isOnGround, _pos, _reqX, _reqY, _yAcc);
         }
 
         public abstract void Render(GameTime gameTime, Matrix view);
@@ -126,6 +137,8 @@ namespace AtomicEngine2.Engine.Entities
             {
                 _xSpeed *= _airFriction;
             }
+
+            _yAcc = MathHelper.Clamp(_yAcc, -_maxYAcc, _maxYAcc);
 
             _xSpeed += _xAcc;
             _ySpeed += _yAcc;

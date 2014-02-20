@@ -101,10 +101,17 @@ namespace AtomicEngine2.Utils
             get { return _br.X; }
         }
 
+        /// <summary>
+        /// Gets the centre of this rectangle
+        /// </summary>
         public Vector2 Orgin
         {
             get { return (_tl + _br) / 2; }
         }
+
+        /// <summary>
+        /// Gets the maximum extent of this rectangle from it's centre point
+        /// </summary>
         public float Extents
         {
             get { return (float)Math.Sqrt((Width / 2) * (Width / 2) + (Height / 2) + (Height / 2)); }
