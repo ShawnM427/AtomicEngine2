@@ -36,7 +36,7 @@ namespace AtomicEngine2.Engine.Entities
         /// The facing, true is right
         /// </summary>
         bool _facing = true;
-
+        
         PlayerController _controller;
         protected override EntityController controller
         {
@@ -72,7 +72,7 @@ namespace AtomicEngine2.Engine.Entities
         public override void Render(GameTime gameTime, Matrix view)
         {
             GetSpriteState();
-            _sprite.Draw(_bounds, gameTime);
+            _sprite.Draw(_bounds, gameTime, view);
         }
 
         private void GetSpriteState()

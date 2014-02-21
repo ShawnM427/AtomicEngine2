@@ -30,6 +30,12 @@ namespace AtomicEngine2.Engine.Render
         Vector3 _mOrgin;
         Vector3 _mScale;
         Vector3 _mShift;
+                
+        public Matrix View
+        {
+            get { return _effect.View; }
+            set { _effect.View = value; }
+        }
 
         /// <summary>
         /// Creates a new advanced sprite batch

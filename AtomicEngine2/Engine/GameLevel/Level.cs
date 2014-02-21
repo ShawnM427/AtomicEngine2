@@ -126,6 +126,9 @@ namespace AtomicEngine2.Engine.GameLevel
             _width = width;
             _height = height;
 
+            _viewWidth = graphics.Viewport.Width;
+            _viewHeight = graphics.Viewport.Height;
+
             _collider = new LevelCollider(graphics);
 
             _effect = new BasicEffect(graphics);

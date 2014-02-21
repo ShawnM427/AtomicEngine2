@@ -2,29 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Input;
+//using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace AtomicEngine2.Engine.Entities
 {
     public class PlayerController : EntityController
     {
         KeyboardState _prevKeyState;
-        GamePadState _prevGamepadState;
+        GamePadState _prevGPState;
 
         Keys _moveLeft = Keys.A;
         Keys _moveRight = Keys.D;
         Keys _jump = Keys.Space;
         Keys _crouch;
 
-        GamePadButtons _gp_jump;
-        GamePadButtons _gp_crouch;
+        Buttons _gp_jump = Buttons.A;
+        Buttons _gp_crouch;
 
-        float _xAcc = 2F;
+        float _xAcc = 5F;
+        float _jumpSpeed = 1.0F;
 
         public PlayerController()
         {
-            _prevGamepadState = GamePad.GetState(PlayerIndex.One);
+            _prevGPState = GamePad.GetState(PlayerIndex.One);
             _prevKeyState = Keyboard.GetState();
         }
 
@@ -39,16 +41,22 @@ namespace AtomicEngine2.Engine.Entities
             if (currentKeyState.IsKeyDown(_moveLeft))
                 entityState.ReqX -= _xAcc;
 
-            if (currentKeyState.IsKeyDown(_jump) & _prevKeyState.IsKeyUp(_jump) & entityState.IsOnGround)
+            if (currentKeyState.IsKeyDown(_jump) & _prevKeyState.IsKeyUp(_jump) 
+                & entityState.IsOnGround)
             {
-                entityState.YAcc -= 0.5F;
-                entityState.ReqY -= 5;
+                entityState.YAcc -= _jumpSpeed;
+            }
+
+            if (currentGPState.IsButtonDown(_gp_jump) & _prevGPState.IsButtonUp(_gp_jump) 
+                & entityState.IsOnGround)
+            {
+                entityState.YAcc -= _jumpSpeed;
             }
 
             entityState.ReqX += currentGPState.ThumbSticks.Left.X * _xAcc;
 
             _prevKeyState = currentKeyState;
-            _prevGamepadState = currentGPState;
+            _prevGPState = currentGPState;
 
             return entityState;
         }

@@ -33,7 +33,7 @@ namespace AtomicEngine2.Engine.Render
             get { return _yFrame; }
             set { _yFrame = value >= _yFrameCount ? _yFrameCount - 1 : value < 0 ? 0 : value; }
         }
-
+        
         /// <summary>
         /// Creates a new animated sprite
         /// </summary>
@@ -70,7 +70,7 @@ namespace AtomicEngine2.Engine.Render
         /// </summary>
         /// <param name="destination">The destination rectangle</param>
         /// <param name="gameTime">The current game time</param>
-        public void Draw(RectangleF destination, GameTime gameTime)
+        public void Draw(RectangleF destination, GameTime gameTime, Matrix view)
         {
             _elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -81,6 +81,7 @@ namespace AtomicEngine2.Engine.Render
                 UpdateSource();
             }
 
+            _batch.View = view;
             _batch.Draw(_texture, destination, _source, _modifier);
             _batch.End();
         }

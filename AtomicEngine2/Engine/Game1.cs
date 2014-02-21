@@ -95,7 +95,7 @@ namespace AtomicEngine2.Engine
         {
             TextureManager texManager = new TextureManager(Content.Load<Texture2D>("atlas2"),21, 15);
 
-            _level = new Level(GraphicsDevice, texManager, 800, 480);
+            _level = new Level(GraphicsDevice, texManager, 1600, 960);
             _level.BackDrop = Content.Load<Texture2D>("backdrop");
             _level.ClearColor = Color.Red;
 
@@ -106,10 +106,19 @@ namespace AtomicEngine2.Engine
             //Triangle t = new Triangle(0, 0, 100, 10, 0, 10);
             RectangleF r = new RectangleF(10, 100, 300, 90);
             r2 = new RectangleF(10, 90, 20, 110);
+            r2 = new RectangleF(10, 90, 20, 110);
 
             _level.AddStaticObject(new LevelBlock(r, Color.White, 1));
-            _level.AddStaticObject(new LevelBlock(r2, 
-                r2.Intersects(r) ? Color.Green: Color.Red, 1));
+            _level.AddStaticObject(new LevelBlock(r2,
+                r2.Intersects(r) ? Color.Green : Color.Red, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(0, 500, 1600, 10), Color.White, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(300, 420, 100, 80), Color.White, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(400, 340, 100, 80), Color.White, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(500, 260, 100, 80), Color.White, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(300, 190, 100, 80), Color.White, 1));
+
+            _level.AddStaticObject(new LevelBlock(new RectangleF(600, 340, 100, 80), Color.White, 1));
+            _level.AddStaticObject(new LevelBlock(new RectangleF(700, 420, 100, 80), Color.White, 1));
 
             p = new Player(GraphicsDevice, playerSpawn, Content);
 
@@ -143,6 +152,7 @@ namespace AtomicEngine2.Engine
                 p.Position = playerSpawn;
             
             _level.Update(gameTime);
+            _level.CameraPos = p.Bounds.Orgin;
 
             Window.Title = string.Format("MonoTest | {0} | {1}",
                 _fps,

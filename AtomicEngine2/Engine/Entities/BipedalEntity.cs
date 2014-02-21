@@ -56,18 +56,36 @@ namespace AtomicEngine2.Engine.Entities
 
         protected EntityState _state;
 
+        /// <summary>
+        /// Gets or sets the position of this entity
+        /// </summary>
         public Vector2 Position
         {
             get { return _pos; }
             set { _pos = value; }
         }
+        /// <summary>
+        /// Gets the bounds of this entity
+        /// </summary>
         public RectangleF Bounds
         {
             get { return _bounds; }
         }
 
-        float mlp;
+        /// <summary>
+        /// A multiplier used to translate speeds to 60 frames per second
+        /// </summary>
+        protected float _speedMultiplier;
         
+        /// <summary>
+        /// Creates a new bipedal entity
+        /// </summary>
+        /// <param name="graphics">The graphics device to bind to</param>
+        /// <param name="pos">The position to create the entity at</param>
+        /// <param name="maxXSpeed">The maximum x speed of the entity (terminal velocity)</param>
+        /// <param name="maxYSpeed">The maximum y speed of the entity (terminal velocity)</param>
+        /// <param name="height">The height of this entity</param>
+        /// <param name="width">The width of this entity</param>
         public BipedalEntity(GraphicsDevice graphics, Vector2 pos, float maxXSpeed, float maxYSpeed, float height, float width)
         {
             _graphics = graphics;
@@ -85,6 +103,11 @@ namespace AtomicEngine2.Engine.Entities
             _bounds = new RectangleF(_pos.X - _width / 2, _pos.Y - _height, _width, _height);
         }
 
+        /// <summary>
+        /// Updates this entity
+        /// </summary>
+        /// <param name="gameTime">The current game time</param>
+        /// <param name="collider">The level collider to check against</param>
         public virtual void Update(GameTime gameTime, LevelCollider collider)
         {
             _prevPos = _pos;
@@ -92,7 +115,7 @@ namespace AtomicEngine2.Engine.Entities
             _reqX = 0;
             _reqY = 0;
 
-            mlp = (float)gameTime.ElapsedGameTime.TotalMilliseconds / PREFERED_UPS;
+            _speedMultiplier = (float)gameTime.ElapsedGameTime.TotalMilliseconds / PREFERED_UPS;
                         
             ApplyPhysics();
 
@@ -105,8 +128,8 @@ namespace AtomicEngine2.Engine.Entities
             _reqX += e.ReqX;
             _reqY += e.ReqY;
 
-            _reqX *= mlp;
-            _reqY *= mlp;
+            _reqX *= _speedMultiplier;
+            _reqY *= _speedMultiplier;
                    
             CheckCollisions(collider);
 
@@ -114,16 +137,27 @@ namespace AtomicEngine2.Engine.Entities
             _pos.Y += _reqY;
 
             _bounds.X = _pos.X - _width / 2;
-            _bounds.Y = _pos.Y - _height + 8;
+            _bounds.Y = _pos.Y - _height;
         }
 
+        /// <summary>
+        /// Updates the entity state
+        /// </summary>
         private void UpdateState()
         {
             _state = new EntityState(_isOnGround, _pos, _reqX, _reqY, _yAcc);
         }
 
+        /// <summary>
+        /// Renders this instance
+        /// </summary>
+        /// <param name="gameTime">The current game time</param>
+        /// <param name="view">The view transformation to use</param>
         public abstract void Render(GameTime gameTime, Matrix view);
 
+        /// <summary>
+        /// Applies the physics to this entity
+        /// </summary>
         protected virtual void ApplyPhysics()
         {
             if (!_isOnGround && _yAcc < _maxYAcc)
@@ -138,10 +172,10 @@ namespace AtomicEngine2.Engine.Entities
                 _xSpeed *= _airFriction;
             }
 
-            _yAcc = MathHelper.Clamp(_yAcc, -_maxYAcc, _maxYAcc);
+            //_yAcc = MathHelper.Clamp(_yAcc, -_maxYAcc, _maxYAcc);
 
-            _xSpeed += _xAcc;
-            _ySpeed += _yAcc;
+            _xSpeed += _xAcc * _speedMultiplier;
+            _ySpeed += _yAcc * _speedMultiplier;
 
             _xSpeed = MathHelper.Clamp(_xSpeed, -_maxXSpeed, _maxXSpeed);
             _ySpeed = MathHelper.Clamp(_ySpeed, -_maxYSpeed, _maxYSpeed);
@@ -150,6 +184,10 @@ namespace AtomicEngine2.Engine.Entities
             _reqY += _ySpeed;
         }
 
+        /// <summary>
+        /// Checks this entity for collisions
+        /// </summary>
+        /// <param name="collider">The collider to check against</param>
         protected virtual void CheckCollisions(LevelCollider collider)
         {
             _verticalCheck.X = _pos.X - _width / 2; _verticalCheck.Y = _pos.Y;
