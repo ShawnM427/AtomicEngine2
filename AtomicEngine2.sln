@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomicEngine2", "AtomicEngine2\AtomicEngine2.csproj", "{65A28F42-35E6-431F-898C-A6CAE86C8977}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUI", "MonoUI\MonoUI.csproj", "{FDB8789F-93D5-4297-A3C3-276DC0FD0076}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Android|Any CPU = Android|Any CPU
@@ -79,6 +81,51 @@ Global
 		{65A28F42-35E6-431F-898C-A6CAE86C8977}.Windows8|Mixed Platforms.Build.0 = Release|x86
 		{65A28F42-35E6-431F-898C-A6CAE86C8977}.Windows8|x86.ActiveCfg = Release|x86
 		{65A28F42-35E6-431F-898C-A6CAE86C8977}.Windows8|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Android|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Android|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Android|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Android|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Android|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Debug|x86.ActiveCfg = Debug|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Debug|x86.Build.0 = Debug|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.iOS|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.iOS|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.iOS|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.iOS|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.iOS|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Linux|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Linux|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Linux|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Linux|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Linux|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.OSX|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.OSX|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.OSX|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.OSX|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.OSX|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.PSM|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.PSM|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.PSM|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.PSM|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.PSM|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Release|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Release|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Release|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Release|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows|x86.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows8|Any CPU.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows8|Mixed Platforms.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows8|Mixed Platforms.Build.0 = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows8|x86.ActiveCfg = Release|x86
+		{FDB8789F-93D5-4297-A3C3-276DC0FD0076}.Windows8|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
