@@ -35,6 +35,24 @@ namespace AtomicEngine2.Engine.Render
             set { Parameters["AmbientColor"].SetValue(value.ToVector4()); }
         }
 
+        public Texture2D Texture
+        {
+            get { return Parameters["AtlasSampler+Atlas"].GetValueTexture2D(); }
+            set { Parameters["AtlasSampler+Atlas"].SetValue(value); }
+        }
+
+        public int XTexs
+        {
+            get { return Parameters["XTexs"].GetValueInt32(); }
+            set { Parameters["XTexs"].SetValue(value); }
+        }
+
+        public int YTexs
+        {
+            get { return Parameters["YTexs"].GetValueInt32(); }
+            set { Parameters["YTexs"].SetValue(value); }
+        }
+
         public TileEffect(GraphicsDevice g)
             : base(g, Resources.TileShader)
         {

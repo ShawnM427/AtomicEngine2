@@ -8,7 +8,7 @@ using AtomicEngine2.Utils;
 
 namespace AtomicEngine2.Engine.Render
 {
-    class AdvancedSpriteBatch
+    public class AdvancedSpriteBatch
     {
         VertexPositionColorTexture[] _vertices;
         short[] _indices;
@@ -35,6 +35,11 @@ namespace AtomicEngine2.Engine.Render
         {
             get { return _effect.View; }
             set { _effect.View = value; }
+        }
+        public Matrix Transform
+        {
+            get { return _effect.World; }
+            set { _effect.World = value; }
         }
 
         /// <summary>
@@ -289,6 +294,7 @@ namespace AtomicEngine2.Engine.Render
             {
                 _depth = 0.1F;
                 _effect.Texture = _texture;
+                _device.SamplerStates[0] = SamplerState.PointWrap;
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {

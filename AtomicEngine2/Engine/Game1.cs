@@ -95,7 +95,7 @@ namespace AtomicEngine2.Engine
         {
             TextureManager texManager = new TextureManager(Content.Load<Texture2D>("atlas2"),21, 15);
 
-            _level = new Level(GraphicsDevice, texManager, 1600, 960);
+            _level = new Level(this, texManager, 1600, 960);
             _level.BackDrop = Content.Load<Texture2D>("backdrop");
             _level.ClearColor = Color.Red;
 
@@ -152,7 +152,6 @@ namespace AtomicEngine2.Engine
                 p.Position = playerSpawn;
             
             _level.Update(gameTime);
-            _level.CameraPos = p.Bounds.Orgin;
 
             Window.Title = string.Format("MonoTest | {0} | {1}",
                 _fps,
@@ -185,9 +184,6 @@ namespace AtomicEngine2.Engine
             }
 
             _level.Render(gameTime);
-
-            spriteBatch.Begin();
-            spriteBatch.End();
             
             //_aBatch.Begin();
             //Random rand = new Random();

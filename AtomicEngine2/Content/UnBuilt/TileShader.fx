@@ -10,6 +10,7 @@ Texture2D Atlas;            // Color texture for mesh
 
 SamplerState AtlasSampler
 {
+	Texture = <Atlas>;
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = Wrap;
     AddressV = Wrap;
@@ -85,7 +86,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float4 texColor = Atlas.Sample(AtlasSampler, WrapTex(input.TexCoords, input.TexID));
 	texColor.a = 1;
 
-	return saturate(texColor + AmbientColor + input.Color);
+	return saturate(texColor + input.Color);
 }
 
 technique Technique1

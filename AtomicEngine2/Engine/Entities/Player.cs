@@ -69,10 +69,10 @@ namespace AtomicEngine2.Engine.Entities
             _controller = new PlayerController();
         }
         
-        public override void Render(GameTime gameTime, Matrix view)
+        public override void Render(GameTime gameTime, Matrix view, Matrix? transform)
         {
             GetSpriteState();
-            _sprite.Draw(_bounds, gameTime, view);
+            _sprite.Draw(_bounds, gameTime, view, transform);
         }
 
         private void GetSpriteState()

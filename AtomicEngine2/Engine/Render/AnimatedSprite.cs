@@ -70,7 +70,7 @@ namespace AtomicEngine2.Engine.Render
         /// </summary>
         /// <param name="destination">The destination rectangle</param>
         /// <param name="gameTime">The current game time</param>
-        public void Draw(RectangleF destination, GameTime gameTime, Matrix view)
+        public void Draw(RectangleF destination, GameTime gameTime, Matrix view, Matrix? transform = null)
         {
             _elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -82,6 +82,7 @@ namespace AtomicEngine2.Engine.Render
             }
 
             _batch.View = view;
+            _batch.Transform = transform.HasValue ? transform.Value : _batch.Transform;
             _batch.Draw(_texture, destination, _source, _modifier);
             _batch.End();
         }

@@ -9,7 +9,7 @@ using AtomicEngine2.Engine.GameLevel;
 
 namespace AtomicEngine2.Engine.Entities
 {
-    public abstract class BipedalEntity
+    public abstract class BipedalEntity : IFocusable
     {
         public const float PREFERED_UPS = 1000.0F / 60.0F;
 
@@ -153,7 +153,7 @@ namespace AtomicEngine2.Engine.Entities
         /// </summary>
         /// <param name="gameTime">The current game time</param>
         /// <param name="view">The view transformation to use</param>
-        public abstract void Render(GameTime gameTime, Matrix view);
+        public abstract void Render(GameTime gameTime, Matrix view, Matrix? transform);
 
         /// <summary>
         /// Applies the physics to this entity

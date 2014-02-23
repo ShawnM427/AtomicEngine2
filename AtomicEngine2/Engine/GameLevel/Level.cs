@@ -9,7 +9,7 @@ using AtomicEngine2.Engine.Entities;
 
 namespace AtomicEngine2.Engine.GameLevel
 {
-    public class Level
+    public class Level : GameComponent
     {
         List<LevelObject> _objects;
         VertexBuffer _backBuffer;
@@ -17,16 +17,15 @@ namespace AtomicEngine2.Engine.GameLevel
 
         List<BipedalEntity> _bipedals;
 
+        Player _player;
+
         #region Render Core Vars
         LevelGeometry _geometry;
         TextureManager _texManager;
         GraphicsDevice _graphics;
         SamplerState s;
         BasicEffect _effect;
-
-        float _nearClip = 0.01F;
-        float _farClip = 100.1F;
-
+        
         Matrix _backMatrix;
         Matrix _geometryMatrix;
         #endregion
@@ -54,32 +53,7 @@ namespace AtomicEngine2.Engine.GameLevel
             get { return _height; }
             set { _height = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the width of the view
-        /// </summary>
-        public float ViewWidth
-        {
-            get { return _viewWidth; }
-            set
-            {
-                _viewWidth = value <= _width ? value : _width;
-                CalcFrameBounds();
-            }
-        }
-        /// <summary>
-        /// Gets or sets the height of the view
-        /// </summary>
-        public float ViewHeight
-        {
-            get { return _viewHeight; }
-            set
-            {
-                _viewHeight = value <= _height ? value : _height;
-                CalcFrameBounds();
-            }
-        }
-        
+                
         /// <summary>
         /// Gets or sets the background color for this level
         /// </summary>
@@ -101,14 +75,13 @@ namespace AtomicEngine2.Engine.GameLevel
         bool _hasBackDrop = false;
 
         /// <summary>
-        /// Gets or sets the camera position, ie. the centre of the frame
+        /// Gets this levels camera object
         /// </summary>
-        public Vector2 CameraPos
+        public Camera2D Camera
         {
-            get { return _cameraPos; }
-            set { _cameraPos = value; CalcFrameBounds(); }
+            get { return _camera; }
         }
-        Vector2 _cameraPos;
+        Camera2D _camera;
         #endregion
 
         /// <summary>
@@ -118,31 +91,39 @@ namespace AtomicEngine2.Engine.GameLevel
         /// <param name="textureAtlas">The tecture atlas to use</param>
         /// <param name="width">The width of the level</param>
         /// <param name="height">The height of the level</param>
-        public Level(GraphicsDevice graphics, TextureManager textureAtlas, float width, float height)
+        public Level(Game game, TextureManager textureAtlas, float width, float height) : base(game)
         {
+            _graphics = game.GraphicsDevice;
             _texManager = textureAtlas;
-            _geometry = new LevelGeometry(graphics);
-            _graphics = graphics;
+            _geometry = new LevelGeometry(_graphics);
             _width = width;
             _height = height;
 
-            _viewWidth = graphics.Viewport.Width;
-            _viewHeight = graphics.Viewport.Height;
+            _viewWidth = _graphics.Viewport.Width;
+            _viewHeight = _graphics.Viewport.Height;
 
-            _collider = new LevelCollider(graphics);
+            _collider = new LevelCollider(_graphics);
 
-            _effect = new BasicEffect(graphics);
+            _effect = new BasicEffect(_graphics);
             _effect.TextureEnabled = true;
             _effect.VertexColorEnabled = true;
             _effect.Texture = _texManager.Texture;
 
             _effect.World = Matrix.Identity;
             _effect.Projection = Matrix.Identity;
-            CalcFrameBounds();
 
             _bipedals = new List<BipedalEntity>();
 
+            _player = new Player(_graphics, new Vector2(100, 10), game.Content);
+
             s = SamplerState.PointWrap;
+
+            _camera = new Camera2D(game);
+            _camera.Focus = _player;
+
+            _effect.View = Matrix.CreateOrthographicOffCenter(0, 800, 480, 0, 0, 100);
+
+            game.Components.Add(this);
         }
 
         /// <summary>
@@ -175,6 +156,10 @@ namespace AtomicEngine2.Engine.GameLevel
                 _collider.AddCollider(obj.Bounds);
         }
 
+        /// <summary>
+        /// Adds a new entity to this level
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
         public void AddEntity(BipedalEntity entity)
         {
             _bipedals.Add(entity);
@@ -184,8 +169,10 @@ namespace AtomicEngine2.Engine.GameLevel
         /// Updates this level
         /// </summary>
         /// <param name="gameTime">The current gameTime</param>
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            _player.Update(gameTime, _collider);
+
             foreach (BipedalEntity entity in _bipedals)
                 entity.Update(gameTime, _collider);
         }
@@ -220,10 +207,10 @@ namespace AtomicEngine2.Engine.GameLevel
                 _backBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColorTexture), 4, BufferUsage.WriteOnly);
                 _backBuffer.SetData(new VertexPositionColorTexture[] 
                     { 
-                    new VertexPositionColorTexture(new Vector3(0,0, 0), Color.White, Vector2.Zero),
-                    new VertexPositionColorTexture(new Vector3(_width, 0, 0), Color.White, new Vector2(1,0)),
-                    new VertexPositionColorTexture(new Vector3(0, _height, 0), Color.White, new Vector2(0,1)),
-                    new VertexPositionColorTexture(new Vector3(_width, _height, 0), Color.White, new Vector2(1,1))
+                    new VertexPositionColorTexture(new Vector3(0, 0, -1), Color.White, Vector2.Zero),
+                    new VertexPositionColorTexture(new Vector3(_width, 0, -1), Color.White, new Vector2(1,0)),
+                    new VertexPositionColorTexture(new Vector3(0, _height, -1), Color.White, new Vector2(0,1)),
+                    new VertexPositionColorTexture(new Vector3(_width, _height, -1), Color.White, new Vector2(1,1))
                     }
                 );
                 _hasBackDrop = true;
@@ -231,35 +218,7 @@ namespace AtomicEngine2.Engine.GameLevel
 
             _backMatrix = Matrix.CreateTranslation(0, 0, -0.5F);
         }
-
-        /// <summary>
-        /// Recalculate the bounds of the frame... kinda slow ATM
-        /// </summary>
-        private void CalcFrameBounds()
-        {
-            float left = _cameraPos.X - _viewWidth / 2;
-            left = left < 0 ? 0 : left;
-
-            float top = _cameraPos.Y - _viewHeight / 2;
-            top = top < 0 ? 0 : top;
-
-            float right = left + _viewWidth;
-            if (right > _width)
-            {
-                right = _width;
-                left = _width - _viewWidth;
-            }
-            float bottom = top + _viewHeight;
-            if (bottom > _height)
-            {
-                bottom = _height;
-                top = _height - _viewHeight;
-            }
-
-            _effect.View = Matrix.CreateOrthographicOffCenter(
-                left, right, bottom, top, _nearClip, _farClip);
-        }
-
+        
         /// <summary>
         /// Renders this level
         /// </summary>
@@ -271,7 +230,7 @@ namespace AtomicEngine2.Engine.GameLevel
             if (_backDrop != null)
             {
                 _effect.Texture = _backDrop;
-                _effect.World = _backMatrix;
+                _effect.World = _camera.Transform;
                 _effect.CurrentTechnique.Passes[0].Apply();
                 _graphics.SetVertexBuffer(_backBuffer);
                 _graphics.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
@@ -279,12 +238,12 @@ namespace AtomicEngine2.Engine.GameLevel
 
             _graphics.SamplerStates[0] = s;
             _effect.Texture = _texManager.Texture;
-            _effect.World = _geometryMatrix;
+            _effect.World = _camera.Transform;
             _effect.CurrentTechnique.Passes[0].Apply();
             _geometry.Render();
 
             foreach (BipedalEntity entity in _bipedals)
-                entity.Render(gameTime, _effect.View);
+                entity.Render(gameTime, _effect.View, _camera.Transform);
 
             _effect.TextureEnabled = false;
             _effect.CurrentTechnique.Passes[0].Apply();
