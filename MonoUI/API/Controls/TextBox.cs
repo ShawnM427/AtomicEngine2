@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenTK.Input;
 
 namespace MonoUI.API.Controls
 {
@@ -19,7 +20,15 @@ namespace MonoUI.API.Controls
         VertexPositionColor[] _cornerVerts = new VertexPositionColor[4];
         static short[] _indices = new short[] { 0, 1, 2, 3, 0 };
         BasicEffect _effect;
-        Color _outlineColor = Color.Black;
+
+        Color _backColor = Color.White; //The background color for when not focused
+        Color _outlineColor = Color.Black; //The outline color for when not focused
+
+        Color _focusedOutlineColor = Color.Red; //The outline color for when focused
+        Color _focusedBackColor = Color.White; //The background color for when focused
+
+        Color _currOutlineColor = Color.Black; //The current outline color
+        //Note: the current background color is just _clearColor
 
         Vector2 _margine = new Vector2(5, 0);
 
@@ -43,8 +52,12 @@ namespace MonoUI.API.Controls
         /// </summary>
         public Color BackColor
         {
-            get { return _clearColor; }
-            set { _clearColor = value; }
+            get { return _backColor; }
+            set
+            {
+                _backColor = value;
+                Invalidate();
+            }
         }
         /// <summary>
         /// Gets or sets the outline color for this panel
@@ -56,6 +69,32 @@ namespace MonoUI.API.Controls
             {
                 _outlineColor = value;
                 _BuildVerts();
+                Invalidate();
+            }
+        }
+        /// <summary>
+        /// Gets or sets the outline color for when this text box is selected
+        /// </summary>
+        public Color FocusedOutlineColor
+        {
+            get { return _focusedOutlineColor; }
+            set
+            {
+                _focusedOutlineColor = value;
+                _BuildVerts();
+                Invalidate();
+            }
+        }
+        /// <summary>
+        /// Gets or sets the background color for when this text box is selected
+        /// </summary>
+        public Color FocusedBackColor
+        {
+            get { return _focusedBackColor; }
+            set
+            {
+                _focusedBackColor = value;
+                Invalidate();
             }
         }
 
@@ -74,7 +113,7 @@ namespace MonoUI.API.Controls
 
             EventInput.CharPressed += _CharEntered;
 
-            _clearColor = Color.White;
+            _clearColor = _backColor;
             _font = font;
 
             _font.LineSpacing = (int)(_font.MeasureString(" ").Y * 0.6F);
@@ -82,6 +121,8 @@ namespace MonoUI.API.Controls
             _effect = new BasicEffect(graphics);
             _effect.VertexColorEnabled = true;
             _BuildVerts();
+
+            FocusChanged += FocusedChange;
 
             Invalidate();
         }
@@ -94,10 +135,10 @@ namespace MonoUI.API.Controls
             float pixelOffY = (1.0F - (2.0F / (_bounds.Height - 1.0F)));
             float pixelOffX = (1.0F - (2.0F / (_bounds.Width - 1.0F)));
 
-            _cornerVerts[0] = new VertexPositionColor(new Vector3(-1, -pixelOffY, 0), _outlineColor); //left bottom
-            _cornerVerts[1] = new VertexPositionColor(new Vector3(-1, 1, 0), _outlineColor); //left top
-            _cornerVerts[2] = new VertexPositionColor(new Vector3(pixelOffX, 1, 0), _outlineColor); //right top
-            _cornerVerts[3] = new VertexPositionColor(new Vector3(pixelOffX, -pixelOffY, 0), _outlineColor); //right bottom
+            _cornerVerts[0] = new VertexPositionColor(new Vector3(-1, -pixelOffY, 0), _currOutlineColor); //left bottom
+            _cornerVerts[1] = new VertexPositionColor(new Vector3(-1, 1, 0), _currOutlineColor); //left top
+            _cornerVerts[2] = new VertexPositionColor(new Vector3(pixelOffX, 1, 0), _currOutlineColor); //right top
+            _cornerVerts[3] = new VertexPositionColor(new Vector3(pixelOffX, -pixelOffY, 0), _currOutlineColor); //right bottom
         }
         
         /// <summary>
@@ -106,23 +147,26 @@ namespace MonoUI.API.Controls
         /// <param name="character">Character that has been entered</param>
         protected virtual void _CharEntered(CharPressedEventArgs e)
         {
-            if (e.KeyChar == '\b')// backspace
-            { 
-                if (_text.Length > 0)
-                {
-                    _text = _text.Remove(_text.Length - 1, 1);
-                }
-            }
-            else
+            if (_focused)
             {
-                if (e.KeyChar == '\r')
-                    _text += '\n';
+                if (e.KeyChar == '\b')// backspace
+                {
+                    if (_text.Length > 0)
+                    {
+                        _text = _text.Remove(_text.Length - 1, 1);
+                    }
+                }
                 else
-                    _text += e.KeyChar;
-            }
+                {
+                    if (e.KeyChar == '\r')
+                        _text += '\n';
+                    else
+                        _text += e.KeyChar;
+                }
 
-            WrapText();
-            Invalidate();
+                WrapText();
+                Invalidate();
+            }
         }
 
         /// <summary>
@@ -179,6 +223,30 @@ namespace MonoUI.API.Controls
             }
 
             _wrappedText = sb.ToString();
+        }
+
+        /// <summary>
+        /// Called when this text box's focus changes
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The focus changed event args</param>
+        private void FocusedChange(object sender, FocusChangedEventArgs e)
+        {
+            _currOutlineColor = e.Focused ? FocusedOutlineColor : OutlineColor;
+            _clearColor = e.Focused ? FocusedBackColor : BackColor;
+
+            _BuildVerts();
+            Invalidate();
+        }
+
+        protected override void _Clicked(object sender, MouseButtonEventArgs e)
+        {
+            Focused = true;
+        }
+
+        protected override void _MousePressed(object sender, MouseButtonEventArgs e)
+        {
+            Focused = false;
         }
     }
 }

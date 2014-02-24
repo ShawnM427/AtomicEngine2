@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using OpenTK.Input;
+using OpenTK;
+
+using GameWindow = Microsoft.Xna.Framework.GameWindow;
 
 namespace MonoUI.API
 {
@@ -12,9 +15,12 @@ namespace MonoUI.API
     /// </summary>
     public static class EventInput
     {
+        #region Events
         static KeyDownEventHandler _keyPressed;
         static CharPressedEventhandler _charPressed;
         static KeyUpEventHandler _keyUp;
+        static MouseButtonEventHandler _mouseDown;
+        static MouseButtonEventHandler _mouseUp;
 
         /// <summary>
         /// Gets or sets the event raised when a key is pressed
@@ -42,6 +48,24 @@ namespace MonoUI.API
         }
 
         /// <summary>
+        /// Gets or sets the event when the mouse is pressed
+        /// </summary>
+        public static MouseButtonEventHandler MouseDown
+        {
+            get { return _mouseDown; }
+            set { _mouseDown = value; }
+        }
+        /// <summary>
+        /// Gets or sets the event when the mouse is released
+        /// </summary>
+        public static MouseButtonEventHandler MouseUp
+        {
+            get { return _mouseUp; }
+            set { _mouseUp = value; }
+        }
+        #endregion
+
+        /// <summary>
         /// Hooks the text input to a game window
         /// </summary>
         /// <param name="window">The window to hook in to</param>
@@ -56,36 +80,51 @@ namespace MonoUI.API
             {
                 OTKWindow = field.GetValue(window) as OpenTK.GameWindow;
             }
-
+                        
             if (OTKWindow != null)
             {
                 OTKWindow.KeyPress += _CharPress;
                 OTKWindow.Keyboard.KeyUp += _KeyUp;
                 OTKWindow.Keyboard.KeyDown += _KeyPressed;
-            }
 
+                OTKWindow.Mouse.ButtonDown += _MousePressed;
+                OTKWindow.Mouse.ButtonUp += _MouseReleased;
+            }
         }
 
-        private static void _KeyPressed(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        private static void _KeyPressed(object sender, KeyboardKeyEventArgs e)
         {
             if (_keyPressed != null)
                 _keyPressed.Invoke(new KeyDownEventArgs(e.Key));
         }
 
-        private static void _KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        private static void _KeyUp(object sender, KeyboardKeyEventArgs e)
         {
             if (_keyUp != null)
                 _keyUp.Invoke(new KeyUpEventArgs(e.Key));
         }
 
-        private static void _CharPress(object sender, OpenTK.KeyPressEventArgs e)
+        private static void _CharPress(object sender, KeyPressEventArgs e)
         {
             if (_charPressed != null)
                 _charPressed.Invoke(new CharPressedEventArgs(e.KeyChar));
         }
+
+        private static void _MousePressed(object sender, MouseButtonEventArgs e)
+        {
+            if (_mouseDown != null)
+                _mouseDown.Invoke(sender, e);
+        }
+
+        private static void _MouseReleased(object sender, MouseButtonEventArgs e)
+        {
+            if (_mouseUp != null)
+                _mouseUp.Invoke(sender, e);
+        }
     }
 
     #region Events
+    #region Keyboard
     /// <summary>
     /// Represents a key that has been pressed
     /// </summary>
@@ -150,5 +189,10 @@ namespace MonoUI.API
     /// </summary>
     /// <param name="e">The CharPressedEventArgs to pass</param>
     public delegate void CharPressedEventhandler(CharPressedEventArgs e);
+    #endregion
+
+    #region Mouse
+    public delegate void MouseButtonEventHandler(object sender, MouseButtonEventArgs e);
+    #endregion
     #endregion
 }
