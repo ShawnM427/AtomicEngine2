@@ -5,12 +5,12 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using OpenTK.Input;
 
-namespace MonoUI.API
+namespace AtomicEngine2.Engine.Input
 {
     /// <summary>
     /// Handles event-based keyboard input
     /// </summary>
-    public static class MonoTextInput
+    public static class EventInput
     {
         static KeyDownEventHandler _keyPressed;
         static CharPressedEventhandler _charPressed;

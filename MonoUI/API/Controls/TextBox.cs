@@ -7,9 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoUI.API.Controls
 {
+    /// <summary>
+    /// Represents a box that can receive textual input
+    /// </summary>
     public class TextBox : Control
     {
-        StringBuilder _builder;
+        string _text;
+        string _wrappedText;
         SpriteFont _font;
 
         VertexPositionColor[] _cornerVerts = new VertexPositionColor[4];
@@ -22,6 +26,40 @@ namespace MonoUI.API.Controls
         Color _textColor = Color.Black;
 
         /// <summary>
+        /// Gets or sets the text for this control
+        /// </summary>
+        public string Text
+        {
+            get { return _text.ToString(); ; }
+            set
+            {
+                _text = value;
+                WrapText();
+                Invalidate();
+            }
+        }
+        /// <summary>
+        /// Gets or sets the background color for this panel
+        /// </summary>
+        public Color BackColor
+        {
+            get { return _clearColor; }
+            set { _clearColor = value; }
+        }
+        /// <summary>
+        /// Gets or sets the outline color for this panel
+        /// </summary>
+        public Color OutlineColor
+        {
+            get { return _outlineColor; }
+            set
+            {
+                _outlineColor = value;
+                _BuildVerts();
+            }
+        }
+
+        /// <summary>
         /// Creates a new text box
         /// </summary>
         /// <param name="bounds">The bounds of this text box</param>
@@ -31,12 +69,15 @@ namespace MonoUI.API.Controls
         public TextBox(Rectangle bounds, GraphicsDevice graphics, SpriteFont font, Control parent = null)
             : base(bounds, graphics, parent)
         {
-            _builder = new StringBuilder();
+            _text = "";
+            _wrappedText = "";
 
-            MonoTextInput.CharPressed += _CharEntered;
+            EventInput.CharPressed += _CharEntered;
 
             _clearColor = Color.White;
             _font = font;
+
+            _font.LineSpacing = (int)(_font.MeasureString(" ").Y * 0.6F);
             
             _effect = new BasicEffect(graphics);
             _effect.VertexColorEnabled = true;
@@ -67,16 +108,20 @@ namespace MonoUI.API.Controls
         {
             if (e.KeyChar == '\b')// backspace
             { 
-                if (_builder.Length > 0)
+                if (_text.Length > 0)
                 {
-                    _builder.Remove(_builder.Length - 1, 1);
+                    _text = _text.Remove(_text.Length - 1, 1);
                 }
             }
             else
             {
-                _builder.Append(e.KeyChar);
+                if (e.KeyChar == '\r')
+                    _text += '\n';
+                else
+                    _text += e.KeyChar;
             }
 
+            WrapText();
             Invalidate();
         }
 
@@ -94,13 +139,46 @@ namespace MonoUI.API.Controls
 
             try
             {
-                _spriteBatch.DrawString(_font, _builder, _margine, _textColor);
+                _spriteBatch.DrawString(_font, _wrappedText, _margine, _textColor);
             }
             catch (ArgumentException)
             {
-                _builder.Clear();
+                _text = "";
+                _wrappedText = "";
             }
 
+        }
+
+        /// <summary>
+        /// Generates the wrapped text for this text box
+        /// </summary>
+        private void WrapText()
+        {
+            string[] words = _text.Split(' ');
+
+            StringBuilder sb = new StringBuilder();
+
+            float lineWidth = 0f;
+
+            float spaceWidth = _font.MeasureString(" ").X;
+
+            foreach (string word in words)
+            {
+                Vector2 size = _font.MeasureString(word);
+
+                if (lineWidth + size.X < _bounds.Width - (_margine.X * 2))
+                {
+                    sb.Append(word + " ");
+                    lineWidth += size.X + spaceWidth;
+                }
+                else
+                {
+                    sb.Append("\n" + word + " ");
+                    lineWidth = size.X + spaceWidth;
+                }
+            }
+
+            _wrappedText = sb.ToString();
         }
     }
 }

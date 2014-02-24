@@ -43,9 +43,9 @@ namespace MonoUI
         /// </summary>
         protected override void Initialize()
         {
-            MonoTextInput.HookKeys(Window);
-            MonoTextInput.KeyPressed += CharPressed;
-            MonoTextInput.KeyUp += CharReleased;
+            EventInput.HookKeys(Window);
+            EventInput.KeyPressed += KeyPressed;
+            EventInput.KeyUp += KeyReleased;
 
             IsMouseVisible = true;
 
@@ -62,13 +62,9 @@ namespace MonoUI
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteFont font = Content.Load<SpriteFont>("font");
 
-            _label = new Label(GraphicsDevice, font, "text", new Point(10, 10));
-            _label.Invalidate();
-
             _panel = new Panel(GraphicsDevice, new Rectangle(10, 40, 320, 273));
-            _panel.AddControl(_label);
-
-            _textBox = new TextBox(new Rectangle(10, 40, 80, 32), GraphicsDevice, font, _panel);
+            _label = new Label(GraphicsDevice, font, "text", new Point(10, 10), _panel);
+            _textBox = new TextBox(new Rectangle(10, 40, 80, 64), GraphicsDevice, font, _panel);
         }
 
         /// <summary>
@@ -93,13 +89,21 @@ namespace MonoUI
             base.Update(gameTime);
         }
 
-        private void CharPressed(KeyDownEventArgs e)
+        /// <summary>
+        /// Raised when a key is pressed
+        /// </summary>
+        /// <param name="e">The KeyDownEventArgs</param>
+        protected virtual void KeyPressed(KeyDownEventArgs e)
         {
             if (e.Key == Key.Q)
                 Window.Title += "|";
         }
 
-        private void CharReleased(KeyUpEventArgs e)
+        /// <summary>
+        /// Raised when a key is released
+        /// </summary>
+        /// <param name="e">The KeyUpEventArgs</param>
+        protected virtual void KeyReleased(KeyUpEventArgs e)
         {
             if (e.Key == Key.Q)
                 Window.Title = "lol";

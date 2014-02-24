@@ -40,7 +40,7 @@
     <Compile Include="API\Controls\Panel.cs" />
     <Compile Include="API\Controls\TextBox.cs" />
     <Compile Include="API\InputManager.cs" />
-    <Compile Include="API\MonoTextInput.cs" />
+    <Compile Include="API\EventInput.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
